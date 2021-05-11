@@ -1,10 +1,9 @@
 use std::ops::{Add, Mul, Div};
-use std::intrinsics::powf32;
 
 pub struct Vector {
-    x: f32,
-    y: f32,
-    z: f32
+    pub x: f32,
+    pub y: f32,
+    pub z: f32
 }
 
 impl Vector {

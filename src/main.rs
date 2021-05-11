@@ -20,6 +20,15 @@ fn write_matrix_to_ppm(matrix: Vec<Vec<Color>>, file_path: &str) {
     }
 }
 
+fn sum(array: &[i32]) -> i32 {
+    let mut result = 0;
+    for element in array.iter() {
+        result += element;
+    }
+
+    result
+}
+
 fn main() {
     let mut matrix = vec![];
 
@@ -35,8 +44,9 @@ fn main() {
         matrix.push(line);
     }
 
-    // matrix.push(vec![Color::new(0, 0, 0), Color::new(0, 0, 0), Color::new(0, 20, 10)]);
-    // matrix.push(vec![Color::new(0, 0, 0), Color::new(5, 223, 10), Color::new(255, 255, 255)]);
+    matrix.push(vec![Color::new(0, 0, 0), Color::new(0, 0, 0), Color::new(0, 20, 10)]);
+    matrix.push(vec![Color::new(0, 0, 0), Color::new(5, 223, 10), Color::new(255, 255, 255)]);
+
 
     write_matrix_to_ppm(matrix, "output.ppm");
 }

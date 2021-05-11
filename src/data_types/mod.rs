@@ -3,3 +3,5 @@ pub mod vector;
 
 pub use color::Color;
 pub use vector::Vector;
+
+pub type PixelMap = [[Color]];
