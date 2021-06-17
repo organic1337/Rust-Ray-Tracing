@@ -3,7 +3,7 @@ use crate::data_types::Color;
 
 const WRITE_ERROR_MESSAGE: &str = "Could not write to buffer.";
 
-/// Object for writing data in Portable Pixel Map format.
+/// Used for writing data in Portable Pixel Map format.
 /// The output format is as follows:
 ///
 /// P3
