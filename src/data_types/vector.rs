@@ -1,8 +1,5 @@
 use std::ops::{Add, Mul, Div};
 
-// TODO: FIX
-use crate::implement_vector_functions;
-
 pub struct Vector {
     pub x: f32,
     pub y: f32,

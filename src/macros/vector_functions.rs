@@ -1,5 +1,3 @@
-#[macro_use]
-
 #[macro_export]
 macro_rules! implement_vector_functions {
     ($vector_type: ty, $($field: ident), *) => {

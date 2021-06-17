@@ -1,1 +1,2 @@
-pub mod vector_functions;
+#[macro_use]
+mod vector_functions;
