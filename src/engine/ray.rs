@@ -1,4 +1,4 @@
-use crate::data_types::{Point, Vector};
+use crate::vectors::{Point, Vector};
 
 pub struct Ray {
     pub origin: Point,

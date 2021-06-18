@@ -1,5 +1,5 @@
 use std::io::Write;
-use crate::data_types::Color;
+use crate::vectors::Color;
 use std::fs::File;
 
 const WRITE_ERROR_MESSAGE: &str = "Could not write to buffer.";

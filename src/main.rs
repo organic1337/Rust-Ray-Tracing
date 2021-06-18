@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::Write;
 
-use rust_ray_tracing::data_types::{Color, Point, Vector};
+use rust_ray_tracing::vectors::{Color, Point, Vector};
 use rust_ray_tracing::engine::Ray;
 use rust_ray_tracing::utils::ppm_writer::PPMWriter;
 
