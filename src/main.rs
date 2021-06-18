@@ -1,8 +1,20 @@
 use std::fs::File;
 use std::io::Write;
+
 use rust_ray_tracing::data_types::{Color, Point, Vector};
-use rust_ray_tracing::utils::ppm_writer::PPMWriter;
 use rust_ray_tracing::engine::Ray;
+use rust_ray_tracing::utils::ppm_writer::PPMWriter;
+
+/// Whether a ray hits a sphere with the given center and radius
+fn hit_sphere(ray: &Ray, center: Point, radius: f64) -> bool {
+    let distance_from_center = ray.origin - center;
+    let a = ray.direction.dot(ray.direction);
+    let b = 2.0 * distance_from_center.dot(ray.direction);
+    let c = distance_from_center.dot(distance_from_center) - radius * radius;
+
+    let discriminant = b * b - 4.0 * a * c;
+    discriminant > 0.0
+}
 
 
 /// This function linearly blends white and blue colors depending of
@@ -15,6 +27,10 @@ use rust_ray_tracing::engine::Ray;
 /// This is called Linear Interpolation, and it is always in format of:
 ///  blended_value = (1 - t) * start_value + t.end_value
 fn ray_color(ray: &Ray) -> Color {
+    if hit_sphere(ray, Point::new(0.0, 0.0, -1.0), 0.5) {
+        return Color::new(1.0, 0.0, 0.0);
+    }
+
     let unit_direction = ray.direction.unit();
     let t = 0.5 * (unit_direction.y + 1.0);
 
@@ -39,7 +55,7 @@ fn main() {
 
     let origin = Point::new(0.0, 0.0, 0.0);
     let horizontal = Vector::new(viewport_width, 0.0, 0.0);
-    let vertical = Vector::new(0.0 ,viewport_height, 0.0);
+    let vertical = Vector::new(0.0, viewport_height, 0.0);
     let focal_vector = Vector::new(0.0, 0.0, focal_length);
     let lower_left_corner = origin - (horizontal / 2.0) - (vertical / 2.0) - focal_vector;
 
@@ -60,5 +76,4 @@ fn main() {
             writer.write_color(color);
         }
     }
-
 }
