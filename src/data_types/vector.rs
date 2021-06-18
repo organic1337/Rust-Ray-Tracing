@@ -1,5 +1,3 @@
-use std::ops::{Add, Mul, Div};
-
 pub struct Vector {
     pub x: f32,
     pub y: f32,
@@ -12,4 +10,4 @@ impl Vector {
     }
 }
 
-implement_vector_functions!(Vector, x, y, z);
+implement_vector_functions!(Vector, f32, x, y, z);

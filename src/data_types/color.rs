@@ -1,7 +1,3 @@
-use std::fmt::{Display, Formatter, Error};
-use std::ops::{Add, Mul};
-
-
 /// Color struct represents an RGB (Red, Green, Blue) trio. Each color is somewhere
 /// between 0 - 255.
 pub struct Color {
@@ -17,9 +13,4 @@ impl Color {
     }
 }
 
-
-impl Display for Color {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        write!(f, "{} {} {}", self.red, self.green, self.blue)
-    }
-}
+implement_vector_functions!(Color, u8, red, green, blue);

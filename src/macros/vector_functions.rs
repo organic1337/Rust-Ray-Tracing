@@ -1,12 +1,17 @@
+
+
+
 #[macro_export]
 macro_rules! implement_vector_functions {
-    ($vector_type: ty, $($field: ident), *) => {
+    ($vector_type: ty, $element_type: ty, $($field: ident), *) => {
+        use std::ops::{Add, Mul, Div};
+
         /// Implement vector size calculation
         impl $vector_type {
             pub fn size_squared(&self) -> f32 {
                 let mut result: f32 = 0.0;
                 $(
-                    result += self.$field.powf(2.0);
+                    result += (self.$field as f32).powf(2.0);
                 )*
 
                 result
@@ -48,10 +53,10 @@ macro_rules! implement_vector_functions {
 
         /// Implement $vector_type & scalar product.
         /// For example: 2 * (1, 2, 3) = (2, 4, 6)
-        impl Mul<f32> for $vector_type {
+        impl Mul<$element_type> for $vector_type {
             type Output = $vector_type;
 
-            fn mul(self, rhs: f32) -> Self::Output {
+            fn mul(self, rhs: $element_type) -> Self::Output {
                 <$vector_type>::new(
                     $(
                         self.$field * rhs,

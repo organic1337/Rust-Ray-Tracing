@@ -1,7 +1,9 @@
 use std::io::Write;
 use crate::data_types::Color;
+use std::fs::File;
 
 const WRITE_ERROR_MESSAGE: &str = "Could not write to buffer.";
+const CREATE_FILE_ERROR_MESSAGE: &str = "Failed to create file";
 
 /// Used for writing data in Portable Pixel Map format.
 /// The output format is as follows:
@@ -23,6 +25,11 @@ struct PPMWriter {
 
 
 impl PPMWriter {
+    pub fn get_file_writer(file_path: &str) -> PPMWriter {
+        let mut file_writer = File::create(file_path).expect(CREATE_FILE_ERROR_MESSAGE);
+        PPMWriter::new(Box::new(file_writer))
+    }
+
     pub fn new(mut buffer: Box<dyn Write>) -> PPMWriter {
         // 'P3' means the colors are represented by ASCII numbers
         buffer.write(b"P3\n").expect(WRITE_ERROR_MESSAGE);
@@ -52,6 +59,7 @@ impl PPMWriter {
             calling 'write_color' method.");
         }
 
-        write!(self.buffer, "{}", color.to_string()).expect(WRITE_ERROR_MESSAGE);
+        let formatted_color = format!("{} {} {}", color.red, color.green, color.blue);
+        write!(self.buffer, "{}", formatted_color).expect(WRITE_ERROR_MESSAGE);
     }
 }
