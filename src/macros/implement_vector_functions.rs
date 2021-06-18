@@ -1,26 +1,26 @@
 /// This macro is used for implementing the "unit_vector" function
-/// on a vector which contains f32 elements.
+/// on a vector which contains f64 elements.
+#[macro_export]
 macro_rules! implement_unit_vector {
-    ($vector_type: ty, f32, $($field: ident), *) => {
+    ($vector_type: ty, $($field: ident), *) => {
         impl $vector_type {
-            pub fn unit_vector(v: $vector_type) {
-                v / v.length()
+            pub fn unit_vector(self) -> $vector_type {
+                self / self.size()
             }
         }
-    };
-
-    ($vector_type: ty, $element_type: ty, $($field: ident), *) => {
-        // Cannot implement unit vector for vector with non float
-        // elements.
     };
 }
 
 
+
+/// Implement cross product for vector.
+/// Cross product is defined only for vectors containing 3 elements.
+#[macro_export]
 macro_rules! implement_cross {
-    ($vector_type: ty, f32, $field1: ident, $field2: ident, $field3: ident) => {
+    ($vector_type: ty, $field1: ident, $field2: ident, $field3: ident) => {
         impl $vector_type {
-            fn cross(&self, other: Vector) -> Vector {
-                Vector::new(
+            fn cross(&self, other: $vector_type) -> $vector_type {
+                <$vector_type>::new(
                     self.$field2 * other.$field3 - self.$field3 * other.$field2,
                     self.$field3 * other.$field1 - self.$field1 * other.$field3,
                     self.$field1 * other.$field2 - self.$field2 * other.$field1
@@ -28,38 +28,34 @@ macro_rules! implement_cross {
             }
         }
     };
-
-    ($vector_type: ty, $element_type: ty, $($field: ident), *) => {
-        // Cross product is defined only for vectors with 3 elements.
-    };
 }
 
 
 #[macro_export]
-macro_rules! implement_vector_functions {
+macro_rules! implement_common_vector_functions {
     ($vector_type: ty, $element_type: ty, $($field: ident), *) => {
         use std::ops::{Add, Mul, Div};
 
         impl $vector_type {
-            pub fn size_squared(&self) -> f32 {
-                let mut result: f32 = 0.0;
+            pub fn size_squared(&self) -> f64 {
+                let mut result: f64 = 0.0;
                 $(
-                    result += (self.$field as f32).powf(2.0);
+                    result += (self.$field as f64).powf(2.0);
                 )*
 
                 result
             }
             
-            pub fn size(&self) -> f32 {
+            pub fn size(&self) -> f64 {
                 self.size_squared().sqrt()
             }
 
             /// Implement dot product.
             /// For example (1, 2, 3) * (1, 0, 1) = 1 + 3 = 4.
-            pub fn dot(&self, other: $vector_type) -> f32 {
-                let mut result: f32 = 0.0;
+            pub fn dot(&self, other: $vector_type) -> f64 {
+                let mut result: f64 = 0.0;
                 $(
-                    result += (self.$field as f32) * (other.$field as f32);
+                    result += (self.$field as f64) * (other.$field as f64);
                 )*
 
                 result
@@ -95,21 +91,35 @@ macro_rules! implement_vector_functions {
             }
         }
 
-        /// Implement $vector_type & scalar product.
+        /// Implement vector and scalar product.
         /// For example: 2 * (1, 2, 3) = (2, 4, 6)
-        impl Mul<$element_type> for $vector_type {
+        impl Mul<$vector_type> for $element_type {
             type Output = $vector_type;
 
-            fn mul(self, rhs: $element_type) -> Self::Output {
+            fn mul(self, rhs: $vector_type) -> Self::Output {
                 <$vector_type>::new(
                     $(
-                        self.$field * rhs,
+                        rhs.$field * self,
                     )*
                 )
             }
         }
 
-        /// Implement Cartesian devision.
+        /// Implement vector and scalar division.
+        /// For example: (2, 4, 2) / (2 = (1, 2, 1)
+        impl Div<$element_type> for $vector_type {
+            type Output = $vector_type;
+
+            fn div(self, rhs: $element_type) -> Self::Output {
+                <$vector_type>::new(
+                    $(
+                        self.$field / rhs,
+                    )*
+                )
+            }
+        }
+
+        /// Implement Cartesian division.
         /// For example: (2, 4, 2) / (2, 1, 2) = (1, 4, 1)
         impl Div for $vector_type {
             type Output = $vector_type;
@@ -122,10 +132,5 @@ macro_rules! implement_vector_functions {
                 )
             }
         }
-
-
-        // Case specific Implementations
-        implement_unit_vector!($vector_type, $element_type, $($field), *);
-        implement_cross!($vector_type, $element_type, $($field), *);
     }
 }

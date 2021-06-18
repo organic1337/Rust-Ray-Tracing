@@ -2,16 +2,18 @@
 /// between 0 - 255.
 #[derive(Copy, Clone)]
 pub struct Color {
-    pub red: f32,
-    pub green: f32,
-    pub blue: f32,
+    pub red: f64,
+    pub green: f64,
+    pub blue: f64,
 }
 
 
 impl Color {
-    pub fn new(red: f32, green: f32, blue: f32) -> Color {
+    pub fn new(red: f64, green: f64, blue: f64) -> Color {
         Color { red, green, blue }
     }
 }
 
-implement_vector_functions!(Color, f32, red, green, blue);
+implement_common_vector_functions!(Color, f64, red, green, blue);
+implement_cross!(Color, red, green, blue);
+implement_unit_vector!(Color, red, green, blue);

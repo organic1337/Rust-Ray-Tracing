@@ -59,7 +59,12 @@ impl PPMWriter {
             calling 'write_color' method.");
         }
 
-        let formatted_color = format!("{} {} {}", color.red, color.green, color.blue);
+        let formatted_color = format!(
+            "{} {} {}",
+            color.red as i64,
+            color.green as i64,
+            color.blue as i64
+        );
         write!(self.buffer, "{}\n", formatted_color).expect(WRITE_ERROR_MESSAGE);
     }
 }
