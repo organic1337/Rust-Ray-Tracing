@@ -1,3 +1,4 @@
+/// Represents a vector in the 3D space.
 pub struct Vector {
     pub x: f32,
     pub y: f32,
@@ -9,5 +10,6 @@ impl Vector {
         Vector {x, y, z}
     }
 }
+
 
 implement_vector_functions!(Vector, f32, x, y, z);

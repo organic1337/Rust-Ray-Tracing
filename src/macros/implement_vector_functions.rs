@@ -1,4 +1,38 @@
+/// This macro is used for implementing the "unit_vector" function
+/// on a vector which contains f32 elements.
+macro_rules! implement_unit_vector {
+    ($vector_type: ty, f32, $($field: ident), *) => {
+        impl $vector_type {
+            pub fn unit_vector(v: $vector_type) {
+                v / v.length()
+            }
+        }
+    };
 
+    ($vector_type: ty, $element_type: ty, $($field: ident), *) => {
+        // Cannot implement unit vector for vector with non float
+        // elements.
+    };
+}
+
+
+macro_rules! implement_cross {
+    ($vector_type: ty, f32, $field1: ident, $field2: ident, $field3: ident) => {
+        impl $vector_type {
+            fn cross(&self, other: Vector) -> Vector {
+                Vector::new(
+                    self.$field2 * other.$field3 - self.$field3 * other.$field2,
+                    self.$field3 * other.$field1 - self.$field1 * other.$field3,
+                    self.$field1 * other.$field2 - self.$field2 * other.$field1
+                )
+            }
+        }
+    };
+
+    ($vector_type: ty, $element_type: ty, $($field: ident), *) => {
+        // Cross product is defined only for vectors with 3 elements.
+    };
+}
 
 
 #[macro_export]
@@ -6,7 +40,6 @@ macro_rules! implement_vector_functions {
     ($vector_type: ty, $element_type: ty, $($field: ident), *) => {
         use std::ops::{Add, Mul, Div};
 
-        /// Implement vector size calculation
         impl $vector_type {
             pub fn size_squared(&self) -> f32 {
                 let mut result: f32 = 0.0;
@@ -19,6 +52,17 @@ macro_rules! implement_vector_functions {
             
             pub fn size(&self) -> f32 {
                 self.size_squared().sqrt()
+            }
+
+            /// Implement dot product.
+            /// For example (1, 2, 3) * (1, 0, 1) = 1 + 3 = 4.
+            pub fn dot(&self, other: $vector_type) -> f32 {
+                let mut result: f32 = 0.0;
+                $(
+                    result += (self.$field as f32) * (other.$field as f32);
+                )*
+
+                result
             }
         }
         
@@ -78,5 +122,10 @@ macro_rules! implement_vector_functions {
                 )
             }
         }
+
+
+        // Case specific Implementations
+        implement_unit_vector!($vector_type, $element_type, $($field), *);
+        implement_cross!($vector_type, $element_type, $($field), *);
     }
 }
