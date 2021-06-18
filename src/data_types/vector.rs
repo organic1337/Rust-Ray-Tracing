@@ -14,5 +14,5 @@ impl Vector {
 
 
 implement_common_vector_functions!(Vector, f64, x, y, z);
-implement_cross!(Vector, x, y, z);
-implement_unit_vector!(Vector, x, y, z);
+implement_cross_function!(Vector, x, y, z);
+implement_unit_function!(Vector, x, y, z);

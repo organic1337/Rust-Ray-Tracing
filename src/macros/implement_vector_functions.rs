@@ -1,10 +1,10 @@
-/// This macro is used for implementing the "unit_vector" function
+/// This macro is used for implementing the "unit" function
 /// on a vector which contains f64 elements.
 #[macro_export]
-macro_rules! implement_unit_vector {
+macro_rules! implement_unit_function {
     ($vector_type: ty, $($field: ident), *) => {
         impl $vector_type {
-            pub fn unit_vector(self) -> $vector_type {
+            pub fn unit(self) -> $vector_type {
                 self / self.size()
             }
         }
@@ -16,7 +16,7 @@ macro_rules! implement_unit_vector {
 /// Implement cross product for vector.
 /// Cross product is defined only for vectors containing 3 elements.
 #[macro_export]
-macro_rules! implement_cross {
+macro_rules! implement_cross_function {
     ($vector_type: ty, $field1: ident, $field2: ident, $field3: ident) => {
         impl $vector_type {
             fn cross(&self, other: $vector_type) -> $vector_type {

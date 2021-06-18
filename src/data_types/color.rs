@@ -15,5 +15,5 @@ impl Color {
 }
 
 implement_common_vector_functions!(Color, f64, red, green, blue);
-implement_cross!(Color, red, green, blue);
-implement_unit_vector!(Color, red, green, blue);
+implement_cross_function!(Color, red, green, blue);
+implement_unit_function!(Color, red, green, blue);

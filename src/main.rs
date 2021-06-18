@@ -6,7 +6,7 @@ use rust_ray_tracing::engine::Ray;
 
 
 fn ray_color(ray: &Ray) -> Color {
-    let unit_direction = ray.direction.unit_vector();
+    let unit_direction = ray.direction.unit();
     let t = 0.5 * (unit_direction.y + 1.0);
 
     let unit_color = Color::new(1.0, 1.0, 1.0);
