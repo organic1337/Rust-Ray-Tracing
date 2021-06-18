@@ -18,7 +18,7 @@ const CREATE_FILE_ERROR_MESSAGE: &str = "Failed to create file";
 /// 3 2 => 3 columns and 2 rows.
 /// 255 => Maximum color value.
 /// ... => RGB triplets.
-struct PPMWriter {
+pub struct PPMWriter {
     buffer: Box<dyn Write>,
     is_size_written: bool,
 }
@@ -40,12 +40,12 @@ impl PPMWriter {
         }
     }
 
-    pub fn write_size(&mut self, rows: usize, columns: usize) {
+    pub fn write_size(&mut self, height: usize, width: usize) {
         if self.is_size_written {
             panic!("Size has already been written and should not be written more than once.")
         }
 
-        write!(self.buffer, "{} {}\n", columns, rows).expect(WRITE_ERROR_MESSAGE);
+        write!(self.buffer, "{} {}\n", width, height).expect(WRITE_ERROR_MESSAGE);
 
         // 255 represents the maximum color
         write!(self.buffer, "255\n").expect(WRITE_ERROR_MESSAGE);
@@ -60,6 +60,6 @@ impl PPMWriter {
         }
 
         let formatted_color = format!("{} {} {}", color.red, color.green, color.blue);
-        write!(self.buffer, "{}", formatted_color).expect(WRITE_ERROR_MESSAGE);
+        write!(self.buffer, "{}\n", formatted_color).expect(WRITE_ERROR_MESSAGE);
     }
 }
