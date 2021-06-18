@@ -5,6 +5,15 @@ use rust_ray_tracing::utils::ppm_writer::PPMWriter;
 use rust_ray_tracing::engine::Ray;
 
 
+/// This function linearly blends white and blue colors depending of
+/// the height of y coordinate after scaling the ray direction to unit length.
+/// which means -1 <= y <= 1.
+///
+/// When t equals 1, we receive the blue color (== Color(0.5, 0.7, 1.0))
+/// when t equals 0, we receive the white color (== Color(1.0, 1.0, 1.0)).
+///
+/// This is called Linear Interpolation, and it is always in format of:
+///  blended_value = (1 - t) * start_value + t.end_value
 fn ray_color(ray: &Ray) -> Color {
     let unit_direction = ray.direction.unit();
     let t = 0.5 * (unit_direction.y + 1.0);
