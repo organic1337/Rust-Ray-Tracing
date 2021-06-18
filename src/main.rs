@@ -13,7 +13,7 @@ fn main() {
 
     for i in 0..bitmap_height {
         for j in 0..bitmap_width {
-            let color = Color::new(i, 20, j);
+            let color = Color::new(i as f32, 20.0, j as f32);
             writer.write_color(&color);
         }
     }
