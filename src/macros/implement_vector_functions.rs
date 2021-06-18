@@ -34,7 +34,7 @@ macro_rules! implement_cross {
 #[macro_export]
 macro_rules! implement_common_vector_functions {
     ($vector_type: ty, $element_type: ty, $($field: ident), *) => {
-        use std::ops::{Add, Mul, Div};
+        use std::ops::{Add, Mul, Div, Sub};
 
         impl $vector_type {
             pub fn size_squared(&self) -> f64 {
@@ -72,6 +72,20 @@ macro_rules! implement_common_vector_functions {
                 <$vector_type>::new(
                     $(
                         self.$field + rhs.$field,
+                    )*
+                )
+            }
+        }
+
+        /// Implement vector substraction.
+        /// For example: (1, 0, 1) - (1, 2, 3) = (0, -2, -2)
+        impl Sub for $vector_type {
+            type Output = $vector_type;
+
+            fn sub(self, rhs: Self) -> Self::Output {
+                <$vector_type>::new(
+                    $(
+                        self.$field - rhs.$field,
                     )*
                 )
             }

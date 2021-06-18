@@ -1,5 +1,5 @@
 /// Represents a vector in the 3D space.
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct Vector {
     pub x: f64,
     pub y: f64,

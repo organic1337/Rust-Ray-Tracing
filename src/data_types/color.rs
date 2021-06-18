@@ -1,6 +1,6 @@
 /// Color struct represents an RGB (Red, Green, Blue) trio. Each color is somewhere
-/// between 0 - 255.
-#[derive(Copy, Clone)]
+/// between 0 - 1.
+#[derive(Copy, Clone, Debug)]
 pub struct Color {
     pub red: f64,
     pub green: f64,
