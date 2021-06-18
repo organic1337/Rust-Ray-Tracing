@@ -13,7 +13,7 @@ impl Ray {
 
     /// This fuctions work as follows: P(t) = origin + t * direction.
     /// t determines how far did the ray go from the direction.
-    fn at(self, t: f64) -> Point {
+    pub fn at(&self, t: f64) -> Point {
         self.origin + t * self.direction
     }
 }

@@ -5,15 +5,19 @@ use rust_ray_tracing::data_types::{Color, Point, Vector};
 use rust_ray_tracing::engine::Ray;
 use rust_ray_tracing::utils::ppm_writer::PPMWriter;
 
-/// Whether a ray hits a sphere with the given center and radius
-fn hit_sphere(ray: &Ray, center: Point, radius: f64) -> bool {
+/// Whether a ray hits a sphere with the given center and radius.
+fn hit_sphere(ray: &Ray, center: Point, radius: f64) -> f64 {
     let distance_from_center = ray.origin - center;
     let a = ray.direction.dot(ray.direction);
     let b = 2.0 * distance_from_center.dot(ray.direction);
     let c = distance_from_center.dot(distance_from_center) - radius * radius;
 
     let discriminant = b * b - 4.0 * a * c;
-    discriminant > 0.0
+    if discriminant > 0.0 {
+        return (-b - discriminant.sqrt()) / 2.0 * a;
+    }
+
+    return -1.0;
 }
 
 
@@ -27,12 +31,21 @@ fn hit_sphere(ray: &Ray, center: Point, radius: f64) -> bool {
 /// This is called Linear Interpolation, and it is always in format of:
 ///  blended_value = (1 - t) * start_value + t.end_value
 fn ray_color(ray: &Ray) -> Color {
-    if hit_sphere(ray, Point::new(0.0, 0.0, -1.0), 0.5) {
-        return Color::new(1.0, 0.0, 0.0);
+    let sphere_center = Point::new(0.0, 0.0, -1.0);
+    let sphere_radius = 0.5;
+    let mut t = hit_sphere(ray, sphere_center, sphere_radius);
+
+    if t > 0.0 {
+        let surface_normal = (ray.at(t) - sphere_center).unit();
+        return 0.5 * Color::new(
+            surface_normal.x + 1.0,
+            surface_normal.y + 1.0,
+            surface_normal.z + 1.0
+        );
     }
 
     let unit_direction = ray.direction.unit();
-    let t = 0.5 * (unit_direction.y + 1.0);
+    t = 0.5 * (unit_direction.y + 1.0);
 
     let unit_color = Color::new(1.0, 1.0, 1.0);
     let direction_color = Color::new(0.5, 0.7, 1.0);
