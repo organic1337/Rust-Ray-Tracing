@@ -8,13 +8,13 @@ use rust_ray_tracing::utils::ppm_writer::PPMWriter;
 /// Whether a ray hits a sphere with the given center and radius.
 fn hit_sphere(ray: &Ray, center: Point, radius: f64) -> f64 {
     let distance_from_center = ray.origin - center;
-    let a = ray.direction.dot(ray.direction);
-    let b = 2.0 * distance_from_center.dot(ray.direction);
-    let c = distance_from_center.dot(distance_from_center) - radius * radius;
+    let a = ray.direction.size_squared();
+    let half_b = distance_from_center.dot(ray.direction);
+    let c = distance_from_center.size_squared() - radius * radius;
 
-    let discriminant = b * b - 4.0 * a * c;
+    let discriminant = half_b * half_b - a * c;
     if discriminant > 0.0 {
-        return (-b - discriminant.sqrt()) / 2.0 * a;
+        return (-half_b - discriminant.sqrt()) / a;
     }
 
     return -1.0;
