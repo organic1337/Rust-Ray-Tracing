@@ -53,7 +53,7 @@ impl PPMWriter {
     }
 
     /// Write a single pixel to the final image
-    pub fn write_color(&mut self, color: Color) {
+    pub fn write_color(&mut self, color: Color, samples_count: usize) {
         if !self.is_size_written {
             panic!("Size hasn't been written yet. Please call the 'write_size' method before \
             calling 'write_color' method.");
@@ -61,9 +61,9 @@ impl PPMWriter {
 
         let formatted_color = format!(
             "{} {} {}",
-            (color.red * 256.0) as i64,
-            (color.green * 256.0)  as i64,
-            (color.blue * 256.0) as i64
+            (color.red * 256.0) as usize / samples_count,
+            (color.green * 256.0) as usize / samples_count,
+            (color.blue * 256.0)  as usize / samples_count
         );
         write!(self.buffer, "{}\n", formatted_color).expect(WRITE_ERROR_MESSAGE);
     }
