@@ -67,6 +67,7 @@ fn main() {
             let mut color = Color::new(0.0, 0.0, 0.0);
 
             for _ in 0..samples_count {
+                // TODO: Improve the anti-aliasing.
                 let random_bias_x = rand::thread_rng().gen_range(0.0..1.0);
                 let random_bias_y = rand::thread_rng().gen_range(0.0..1.0);
 
