@@ -12,6 +12,11 @@ impl Color {
     pub fn new(red: f64, green: f64, blue: f64) -> Color {
         Color { red, green, blue }
     }
+
+    /// Generate a color with all elements equal to 0
+    pub fn zeroes() -> Color {
+        Color::new(0.0, 0.0, 0.0)
+    }
 }
 
 implement_common_vector_functions!(Color, f64, red, green, blue);

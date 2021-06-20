@@ -9,6 +9,7 @@ use rust_ray_tracing::engine::hittables::hittable_collection::HittableCollection
 use rust_ray_tracing::engine::hittables::sphere::Sphere;
 use rust_ray_tracing::engine::camera::Camera;
 use rand::Rng;
+use rust_ray_tracing::engine::utils::random_float;
 
 
 fn ray_color<T: Hittable>(ray: &Ray, world: &T) -> Color {
@@ -50,7 +51,7 @@ fn main() {
 
     // Camera
     let camera = Camera::new(
-        Point::new(0.0, 0.0, 0.0),
+        Point::zeroes(),
         aspect_ratio,
         2.0,
         1.0
@@ -64,12 +65,12 @@ fn main() {
 
     for j in (0..image_height).rev() {
         for i in 0..(image_width) {
-            let mut color = Color::new(0.0, 0.0, 0.0);
+            let mut color = Color::zeroes();
 
             for _ in 0..samples_count {
                 // TODO: Improve the anti-aliasing.
-                let random_bias_x = rand::thread_rng().gen_range(0.0..1.0);
-                let random_bias_y = rand::thread_rng().gen_range(0.0..1.0);
+                let random_bias_x = random_float();
+                let random_bias_y = random_float();
 
                 let x = (i as f64 + random_bias_x) / ((image_width - 1) as f64);
                 let y = (j as f64 + random_bias_y) / ((image_height - 1) as f64);

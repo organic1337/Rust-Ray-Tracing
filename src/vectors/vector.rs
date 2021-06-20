@@ -1,3 +1,5 @@
+use crate::engine::utils::random_float;
+
 /// Represents a vector in the 3D space.
 #[derive(Copy, Clone, Debug)]
 pub struct Vector {
@@ -9,6 +11,16 @@ pub struct Vector {
 impl Vector {
     pub fn new(x: f64, y: f64, z: f64) -> Vector {
         Vector {x, y, z}
+    }
+
+    /// Generate a vector with all elements equal to 0
+    pub fn zeroes() -> Vector {
+        Vector::new(0.0, 0.0, 0.0)
+    }
+
+    /// Generate a vector with random elements between 0 - 1
+    pub fn random() -> Vector {
+        Vector::new(random_float(), random_float(), random_float())
     }
 }
 
