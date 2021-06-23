@@ -16,7 +16,8 @@ fn ray_color<T: Hittable>(ray: &Ray, world: &T, depth: usize) -> Color {
     let record = world.hit(ray, 0.001, f64::INFINITY);
     match record {
         Some(record) => {
-            let target = record.point + record.normal + Vector::random_in_unit_sphere();
+            let random_unit_sphere_vector = Vector::random_in_unit_sphere();
+            let target = record.point + record.normal + random_unit_sphere_vector.unit();
             let new_ray = Ray::new(record.point, target - ray.origin);
 
             if depth == 0 {
@@ -58,8 +59,8 @@ fn main() {
     );
 
     // Render
-    let samples_count = 20;
-    let depth = 40;
+    let samples_count = 80;
+    let depth = 50;
 
     let mut writer = PPMWriter::get_file_writer("test.ppm");
     writer.write_size(image_height as usize, image_width as usize);
