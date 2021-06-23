@@ -72,9 +72,11 @@ impl PPMWriter {
         }
 
         let color = color / samples_count as f64;
-        let clamped_red = self.clamp(color.red, 0.0, 0.999);
-        let clamped_green = self.clamp(color.green, 0.0, 0.999);
-        let clamped_blue = self.clamp(color.blue, 0.0, 0.999);
+
+        // Use square root for gamma 2.0 correction
+        let clamped_red = self.clamp(color.red.sqrt(), 0.0, 0.999);
+        let clamped_green = self.clamp(color.green.sqrt(), 0.0, 0.999);
+        let clamped_blue = self.clamp(color.blue.sqrt(), 0.0, 0.999);
 
         let formatted_color = format!(
             "{} {} {}",

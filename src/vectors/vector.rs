@@ -1,16 +1,17 @@
-use crate::engine::utils::random_float;
+use crate::engine::utils::{random_float};
+use rand::random;
 
 /// Represents a vector in the 3D space.
 #[derive(Copy, Clone, Debug)]
 pub struct Vector {
     pub x: f64,
     pub y: f64,
-    pub z: f64
+    pub z: f64,
 }
 
 impl Vector {
     pub fn new(x: f64, y: f64, z: f64) -> Vector {
-        Vector {x, y, z}
+        Vector { x, y, z }
     }
 
     /// Generate a vector with all elements equal to 0
@@ -19,8 +20,21 @@ impl Vector {
     }
 
     /// Generate a vector with random elements between 0 - 1
-    pub fn random() -> Vector {
-        Vector::new(random_float(), random_float(), random_float())
+    pub fn random(min_value: f64, max_value: f64) -> Vector {
+        Vector::new(
+            random_float(min_value, max_value),
+            random_float(min_value, max_value),
+            random_float(min_value, max_value)
+        )
+    }
+
+    pub fn random_in_unit_sphere() -> Vector {
+        loop {
+            let random_vector = Vector::random(-1.0, 1.0);
+            if random_vector.size_squared() <= 1.0 {
+                return random_vector;
+            }
+        }
     }
 }
 

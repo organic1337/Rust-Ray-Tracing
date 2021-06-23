@@ -8,22 +8,22 @@ use rust_ray_tracing::engine::hittables::hittable::{HitRecord, Hittable};
 use rust_ray_tracing::engine::hittables::hittable_collection::HittableCollection;
 use rust_ray_tracing::engine::hittables::sphere::Sphere;
 use rust_ray_tracing::engine::camera::Camera;
-use rand::Rng;
+use rand::{Rng, random};
 use rust_ray_tracing::engine::utils::random_float;
 
 
-fn ray_color<T: Hittable>(ray: &Ray, world: &T) -> Color {
-    let record = world.hit(ray, 0.0, f64::INFINITY);
+fn ray_color<T: Hittable>(ray: &Ray, world: &T, depth: usize) -> Color {
+    let record = world.hit(ray, 0.001, f64::INFINITY);
     match record {
         Some(record) => {
-            let record_normal = record.normal;
-            let ray_color = Color::new(
-                record_normal.x + 1.0,
-                record_normal.y + 1.0,
-                record_normal.z + 1.0
-            );
+            let target = record.point + record.normal + Vector::random_in_unit_sphere();
+            let new_ray = Ray::new(record.point, target - ray.origin);
 
-            ray_color / 2.0
+            if depth == 0 {
+                return Color::new(0.0, 0.0, 0.0)
+            }
+
+            ray_color(&new_ray, world, depth - 1) / 2.0
         }
         None => {
             let t = (ray.direction.unit().y + 1.0) / 2.0;
@@ -58,7 +58,8 @@ fn main() {
     );
 
     // Render
-    let samples_count = 30;
+    let samples_count = 20;
+    let depth = 40;
 
     let mut writer = PPMWriter::get_file_writer("test.ppm");
     writer.write_size(image_height as usize, image_width as usize);
@@ -69,14 +70,14 @@ fn main() {
 
             for _ in 0..samples_count {
                 // TODO: Improve the anti-aliasing.
-                let random_bias_x = random_float();
-                let random_bias_y = random_float();
+                let random_bias_x = random_float(0.0, 1.0);
+                let random_bias_y = random_float(0.0, 1.0);
 
                 let x = (i as f64 + random_bias_x) / ((image_width - 1) as f64);
                 let y = (j as f64 + random_bias_y) / ((image_height - 1) as f64);
 
                 let ray = camera.get_ray(x, y);
-                color = color + ray_color(&ray, &world);
+                color = color + ray_color(&ray, &world, depth);
             }
 
             writer.write_color(color, samples_count);
