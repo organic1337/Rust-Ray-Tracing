@@ -1,6 +1,7 @@
 use std::io::Write;
 use crate::vectors::Color;
 use std::fs::File;
+use std::cmp::max;
 
 const WRITE_ERROR_MESSAGE: &str = "Could not write to buffer.";
 const CREATE_FILE_ERROR_MESSAGE: &str = "Failed to create file";
@@ -52,6 +53,17 @@ impl PPMWriter {
         self.is_size_written = true;
     }
 
+    pub fn clamp(&self, number: f64, min_value: f64, max_value: f64) -> f64 {
+        if number > max_value {
+            return max_value;
+        }
+        if number < min_value {
+            return min_value
+        }
+
+        number
+    }
+
     /// Write a single pixel to the final image
     pub fn write_color(&mut self, color: Color, samples_count: usize) {
         if !self.is_size_written {
@@ -59,12 +71,18 @@ impl PPMWriter {
             calling 'write_color' method.");
         }
 
+        let color = color / samples_count as f64;
+        let clamped_red = self.clamp(color.red, 0.0, 0.999);
+        let clamped_green = self.clamp(color.green, 0.0, 0.999);
+        let clamped_blue = self.clamp(color.blue, 0.0, 0.999);
+
         let formatted_color = format!(
             "{} {} {}",
-            (color.red * 256.0) as usize / samples_count,
-            (color.green * 256.0) as usize / samples_count,
-            (color.blue * 256.0)  as usize / samples_count
+            (clamped_red * 256.0) as usize,
+            (clamped_green * 256.0) as usize,
+            (clamped_blue * 256.0)  as usize
         );
+
         write!(self.buffer, "{}\n", formatted_color).expect(WRITE_ERROR_MESSAGE);
     }
 }
