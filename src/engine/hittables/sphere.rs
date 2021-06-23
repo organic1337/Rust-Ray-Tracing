@@ -1,22 +1,24 @@
 use crate::engine::hittables::hittable::{HitRecord, Hittable};
 use crate::engine::Ray;
 use crate::vectors::Point;
+use crate::engine::materials::material::Material;
 
-pub struct Sphere {
+pub struct Sphere<'a, T: Material> {
     center: Point,
     radius: f64,
+    material: &'a T
 }
 
 
-impl Sphere {
-    pub fn new(center: Point, radius: f64) -> Sphere {
-        Sphere {center, radius}
+impl<'a, T> Sphere<T> {
+    pub fn new(center: Point, radius: f64, material: &'a T) -> Sphere<T> {
+        Sphere {center, radius, material}
     }
 }
 
 
-impl Hittable for Sphere {
-    fn hit(self: &Self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
+impl<T> Hittable<T> for Sphere<T> {
+    fn hit(self: &Self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord<T>> {
         let distance_from_center = ray.origin - self.center;
         let a = ray.direction.size_squared();
         let half_b = distance_from_center.dot(ray.direction);
@@ -39,6 +41,6 @@ impl Hittable for Sphere {
 
         let hit_point = ray.at(root);
         let normal = (hit_point - self.center) / self.radius;
-        Some(HitRecord::from_ray(ray, root, normal))
+        Some(HitRecord::from_ray(ray, root, normal, self.material))
     }
 }
