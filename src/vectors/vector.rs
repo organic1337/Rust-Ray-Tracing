@@ -40,7 +40,7 @@ impl Vector {
     }
 
     pub fn reflect(self, normal: Vector) -> Vector {
-        self + 2.0 * self.dot(normal) * normal
+        self - 2.0 * self.dot(normal) * normal
     }
 
     pub fn random_unit_vector() -> Vector {
