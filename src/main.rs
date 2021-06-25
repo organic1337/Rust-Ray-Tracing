@@ -15,6 +15,8 @@ use rust_ray_tracing::engine::Ray;
 use rust_ray_tracing::engine::utils::random_float;
 use rust_ray_tracing::utils::ppm_writer::PPMWriter;
 use rust_ray_tracing::vectors::{Color, Point, Vector};
+use rust_ray_tracing::consts::ASPECT_RATIO;
+use rust_ray_tracing::engine::materials::metal::Metal;
 
 fn ray_color<'a, T: Hittable<'a>>(ray: &Ray, world: &T, depth: usize) -> Color {
     let record = world.hit(ray, 0.001, f64::INFINITY);
@@ -53,9 +55,9 @@ fn main() {
 
     // World
     let material_ground: Box<dyn Material> = Box::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
-    let material_center: Box<dyn Material> = Box::new(Dielectric::new(1.5));
+    let material_center: Box<dyn Material> = Box::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
     let material_left: Box<dyn Material> = Box::new(Dielectric::new(1.5));
-    let material_right: Box<dyn Material> = Box::new(Lambertian::new(Color::new(0.8, 0.6, 0.2)));
+    let material_right: Box<dyn Material> = Box::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
 
     let ground = Sphere::new(Point::new(0.0, -100.5, -1.0), 100.0, &material_ground);
     let center_sphere = Sphere::new(Point::new(0.0, 0.0, -1.0), 0.5, &material_center);
@@ -70,10 +72,11 @@ fn main() {
 
     // Camera
     let camera = Camera::new(
-        Point::zeroes(),
-        aspect_ratio,
-        2.0,
-        1.0,
+        Point::new(-2.0, 2.0, 1.0),
+        Point::new(0.0, 0.0, -1.0),
+        Point::new(0.0, 1.0, 0.0),
+        90.0,
+        ASPECT_RATIO
     );
 
     // Render

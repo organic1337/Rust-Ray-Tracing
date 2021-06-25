@@ -19,7 +19,7 @@ macro_rules! implement_unit_function {
 macro_rules! implement_cross_function {
     ($vector_type: ty, $field1: ident, $field2: ident, $field3: ident) => {
         impl $vector_type {
-            fn cross(&self, other: $vector_type) -> $vector_type {
+            pub fn cross(&self, other: $vector_type) -> $vector_type {
                 <$vector_type>::new(
                     self.$field2 * other.$field3 - self.$field3 * other.$field2,
                     self.$field3 * other.$field1 - self.$field1 * other.$field3,
