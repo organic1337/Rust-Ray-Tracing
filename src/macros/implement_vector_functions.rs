@@ -34,7 +34,7 @@ macro_rules! implement_cross_function {
 #[macro_export]
 macro_rules! implement_common_vector_functions {
     ($vector_type: ty, $element_type: ty, $($field: ident), *) => {
-        use std::ops::{Add, Mul, Div, Sub};
+        use std::ops::{Add, Mul, Div, Sub, Neg};
         use crate::consts::NEAR_ZERO_THRESHOLD;
 
         impl $vector_type {
@@ -154,6 +154,14 @@ macro_rules! implement_common_vector_functions {
                         self.$field / rhs.$field,
                     )*
                 )
+            }
+        }
+
+        impl Neg for $vector_type {
+            type Output = $vector_type;
+
+            fn neg(self) -> Self::Output {
+                (-1.0) * self
             }
         }
     }

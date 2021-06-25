@@ -1,5 +1,4 @@
 use crate::engine::utils::{random_float};
-use rand::random;
 use std::cmp::min;
 
 
@@ -55,7 +54,6 @@ impl Vector {
         perp_ray + parallel_ray
     }
 }
-
 
 implement_common_vector_functions!(Vector, f64, x, y, z);
 implement_cross_function!(Vector, x, y, z);

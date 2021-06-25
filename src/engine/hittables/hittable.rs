@@ -19,7 +19,7 @@ impl<'a> HitRecord<'a> {
 
     pub fn from_ray(ray: &Ray,  t: f64, outward_normal: Vector, material: &'a Box<dyn Material>) -> HitRecord<'a> {
         let front_face = ray.direction.dot(outward_normal) < 0.0;
-        let normal = if front_face { outward_normal } else {(-1.0) * outward_normal };
+        let normal = if front_face { outward_normal } else { -outward_normal };
         let hit_point = ray.at(t);
 
         HitRecord::new(hit_point, normal, material, t, front_face)

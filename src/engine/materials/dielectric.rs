@@ -20,7 +20,7 @@ impl Dielectric {
             return AIR_REFRACTION_INDEX / self.refraction_index
         }
 
-        self.refraction_index
+        self.refraction_index / AIR_REFRACTION_INDEX
     }
 
     /// Schlick's approximation for for reflectance
@@ -38,9 +38,7 @@ impl Material for Dielectric {
         let refraction_ratio = self.get_refraction_ratio(hit_record);
 
         let unit_direction = ray.direction.unit();
-        let refracted_direction = unit_direction.refract(hit_record.normal, refraction_ratio);
-
-        let cos_theta = f64::min(((-1.0) * unit_direction).dot(hit_record.normal), 1.0);
+        let cos_theta = f64::min((-unit_direction).dot(hit_record.normal), 1.0);
         let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
 
         // According to snell's law
@@ -54,7 +52,7 @@ impl Material for Dielectric {
         }
 
         let result = ScatterResult::new(
-            Ray::new(hit_record.point, refracted_direction),
+            Ray::new(hit_record.point, direction),
             attenuation
         );
         Some(result)
