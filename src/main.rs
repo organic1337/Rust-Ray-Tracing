@@ -1,37 +1,44 @@
 use std::fs::File;
 use std::io::Write;
 
-use rust_ray_tracing::vectors::{Color, Point, Vector};
-use rust_ray_tracing::engine::Ray;
-use rust_ray_tracing::utils::ppm_writer::PPMWriter;
+use rand::{random, Rng};
+
+use rust_ray_tracing::engine::camera::Camera;
 use rust_ray_tracing::engine::hittables::hittable::{HitRecord, Hittable};
 use rust_ray_tracing::engine::hittables::hittable_collection::HittableCollection;
 use rust_ray_tracing::engine::hittables::sphere::Sphere;
-use rust_ray_tracing::engine::camera::Camera;
-use rand::{Rng, random};
+use rust_ray_tracing::engine::materials::lambertian::Lambertian;
+use rust_ray_tracing::engine::materials::material::{Material, ScatterResult};
+use rust_ray_tracing::engine::materials::metal::Metal;
+use rust_ray_tracing::engine::Ray;
 use rust_ray_tracing::engine::utils::random_float;
+use rust_ray_tracing::utils::ppm_writer::PPMWriter;
+use rust_ray_tracing::vectors::{Color, Point, Vector};
 
-
-fn ray_color<T: Hittable>(ray: &Ray, world: &T, depth: usize) -> Color {
+fn ray_color<'a, T: Hittable<'a>>(ray: &Ray, world: &T, depth: usize) -> Color {
     let record = world.hit(ray, 0.001, f64::INFINITY);
+    if depth <= 0 {
+        return Color::zeroes();
+    }
+
     match record {
         Some(record) => {
-            let random_unit_sphere_vector = Vector::random_in_unit_sphere();
-            let target = record.point + record.normal + random_unit_sphere_vector.unit();
-            let new_ray = Ray::new(record.point, target - ray.origin);
+            let material = record.material;
+            let scatter_result = material.scatter(ray, &record);
 
-            if depth == 0 {
-                return Color::new(0.0, 0.0, 0.0)
+            if let Some(scatter_result) = scatter_result {
+                let ScatterResult {scattered, attenuation} = scatter_result;
+                return attenuation * ray_color(&scattered, world, depth - 1);
             }
 
-            ray_color(&new_ray, world, depth - 1) / 2.0
+            Color::zeroes()
         }
         None => {
             let t = (ray.direction.unit().y + 1.0) / 2.0;
             let blue = Color::new(0.5, 0.7, 1.0);
             let white = Color::new(1.0, 1.0, 1.0);
 
-            (1.0 - t) * white  + t * blue
+            (1.0 - t) * white + t * blue
         }
     }
 }
@@ -44,18 +51,28 @@ fn main() {
     let image_height: usize = (image_width as f64 / aspect_ratio) as usize;
 
     // World
+    let material_ground: Box<dyn Material> = Box::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
+    let material_center: Box<dyn Material> = Box::new(Lambertian::new(Color::new(0.7, 0.3, 0.3)));
+    let material_left: Box<dyn Material> = Box::new(Metal::new(Color::new(0.8, 0.8, 0.8), 0.2));
+    let material_right: Box<dyn Material> = Box::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.2));
+
+    let ground = Sphere::new(Point::new(0.0, -100.5, -1.0), 100.0, &material_ground);
+    let center_sphere = Sphere::new(Point::new(0.0, 0.0, -1.0), 0.5, &material_center);
+    let left_sphere = Sphere::new(Point::new(-1.0, 0.0, -1.0), 0.5, &material_left);
+    let right_sphere = Sphere::new(Point::new(1.0, 0.0, -1.0), 0.5, &material_right);
+
     let mut world = HittableCollection::new();
-    let sphere = Sphere::new(Point::new(0.0, 0.0, -1.0), 0.5);
-    let surface = Sphere::new(Point::new(0.0, -100.5, -1.0), 100.0);
-    world.add(Box::new(sphere));
-    world.add(Box::new(surface));
+    world.add(&ground);
+    world.add(&center_sphere);
+    world.add(&left_sphere);
+    world.add(&right_sphere);
 
     // Camera
     let camera = Camera::new(
         Point::zeroes(),
         aspect_ratio,
         2.0,
-        1.0
+        1.0,
     );
 
     // Render

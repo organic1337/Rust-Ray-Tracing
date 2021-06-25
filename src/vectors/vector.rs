@@ -1,6 +1,7 @@
 use crate::engine::utils::{random_float};
 use rand::random;
 
+
 /// Represents a vector in the 3D space.
 #[derive(Copy, Clone, Debug)]
 pub struct Vector {
@@ -35,6 +36,15 @@ impl Vector {
                 return random_vector;
             }
         }
+    }
+
+    pub fn reflect(self, normal: Vector) -> Vector {
+        // TODO: Check if really should be minus instead of plus
+        self - 2.0 * self.dot(normal) * normal
+    }
+
+    pub fn random_unit_vector() -> Vector {
+        Vector::random_in_unit_sphere().unit()
     }
 }
 

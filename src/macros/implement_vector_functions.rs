@@ -35,6 +35,7 @@ macro_rules! implement_cross_function {
 macro_rules! implement_common_vector_functions {
     ($vector_type: ty, $element_type: ty, $($field: ident), *) => {
         use std::ops::{Add, Mul, Div, Sub};
+        use crate::consts::NEAR_ZERO_THRESHOLD;
 
         impl $vector_type {
             pub fn size_squared(&self) -> f64 {
@@ -59,6 +60,15 @@ macro_rules! implement_common_vector_functions {
                 )*
 
                 result
+            }
+
+            pub fn near_zero(&self) -> bool {
+                let mut is_near_zero = true;
+                $(
+                    is_near_zero = is_near_zero && self.$field < NEAR_ZERO_THRESHOLD;
+                )*
+
+                is_near_zero
             }
         }
         

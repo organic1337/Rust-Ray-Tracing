@@ -3,22 +3,22 @@ use crate::engine::Ray;
 use crate::vectors::Point;
 use crate::engine::materials::material::Material;
 
-pub struct Sphere<'a, T: Material> {
+pub struct Sphere<'a> {
     center: Point,
     radius: f64,
-    material: &'a T
+    material: &'a Box<dyn Material>
 }
 
 
-impl<'a, T> Sphere<T> {
-    pub fn new(center: Point, radius: f64, material: &'a T) -> Sphere<T> {
+impl<'a> Sphere<'a> {
+    pub fn new(center: Point, radius: f64, material: &'a Box<dyn Material>) -> Sphere<'a> {
         Sphere {center, radius, material}
     }
 }
 
 
-impl<T> Hittable<T> for Sphere<T> {
-    fn hit(self: &Self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord<T>> {
+impl<'a> Hittable<'a> for Sphere<'a> {
+    fn hit(self: &Self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord<'a>> {
         let distance_from_center = ray.origin - self.center;
         let a = ray.direction.size_squared();
         let half_b = distance_from_center.dot(ray.direction);
