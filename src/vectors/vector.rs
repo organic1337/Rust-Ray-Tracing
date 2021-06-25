@@ -1,5 +1,6 @@
 use crate::engine::utils::{random_float};
 use rand::random;
+use std::cmp::min;
 
 
 /// Represents a vector in the 3D space.
@@ -39,12 +40,19 @@ impl Vector {
     }
 
     pub fn reflect(self, normal: Vector) -> Vector {
-        // TODO: Check if really should be minus instead of plus
-        self - 2.0 * self.dot(normal) * normal
+        self + 2.0 * self.dot(normal) * normal
     }
 
     pub fn random_unit_vector() -> Vector {
         Vector::random_in_unit_sphere().unit()
+    }
+
+    pub fn refract(self, normal: Vector, refraction_ratio: f64) -> Vector {
+        let cos_theta = f64::min(((-1.0) * self).dot(normal), 1.0);
+        let perp_ray = refraction_ratio * (self + cos_theta * normal);
+        let parallel_ray = (-1.0) * (1.0 - perp_ray.size_squared()).abs().sqrt() * normal;
+
+        perp_ray + parallel_ray
     }
 }
 

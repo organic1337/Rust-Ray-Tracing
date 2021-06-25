@@ -8,8 +8,9 @@ use rust_ray_tracing::engine::hittables::hittable::{HitRecord, Hittable};
 use rust_ray_tracing::engine::hittables::hittable_collection::HittableCollection;
 use rust_ray_tracing::engine::hittables::sphere::Sphere;
 use rust_ray_tracing::engine::materials::lambertian::Lambertian;
+use rust_ray_tracing::engine::materials::dielectric::Dielectric;
+
 use rust_ray_tracing::engine::materials::material::{Material, ScatterResult};
-use rust_ray_tracing::engine::materials::metal::Metal;
 use rust_ray_tracing::engine::Ray;
 use rust_ray_tracing::engine::utils::random_float;
 use rust_ray_tracing::utils::ppm_writer::PPMWriter;
@@ -52,9 +53,9 @@ fn main() {
 
     // World
     let material_ground: Box<dyn Material> = Box::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
-    let material_center: Box<dyn Material> = Box::new(Lambertian::new(Color::new(0.7, 0.3, 0.3)));
-    let material_left: Box<dyn Material> = Box::new(Metal::new(Color::new(0.8, 0.8, 0.8), 0.2));
-    let material_right: Box<dyn Material> = Box::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.2));
+    let material_center: Box<dyn Material> = Box::new(Dielectric::new(1.5));
+    let material_left: Box<dyn Material> = Box::new(Dielectric::new(1.5));
+    let material_right: Box<dyn Material> = Box::new(Lambertian::new(Color::new(0.8, 0.6, 0.2)));
 
     let ground = Sphere::new(Point::new(0.0, -100.5, -1.0), 100.0, &material_ground);
     let center_sphere = Sphere::new(Point::new(0.0, 0.0, -1.0), 0.5, &material_center);
