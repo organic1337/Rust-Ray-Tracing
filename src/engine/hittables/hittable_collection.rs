@@ -23,7 +23,7 @@ impl<'a> HittableCollection<'a> {
 }
 
 impl<'a> Hittable<'a> for HittableCollection<'a> {
-    fn hit<'b>(&'a self, ray: &'b Ray, t_min: f64, t_max: f64) -> Option<HitRecord<'a>> {
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         let mut smallest_distance = t_max;
         let mut result = None;
 

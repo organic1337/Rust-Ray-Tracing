@@ -16,7 +16,7 @@ impl Metal {
 }
 
 impl Material for Metal {
-    fn scatter<'a, 'b, 'c>(&'a self, ray: &'b Ray, hit_record: &'c HitRecord<'a>) -> Option<ScatterResult> {
+    fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<ScatterResult> {
         let mut reflected = ray.direction.unit().reflect(hit_record.normal);
 
         // Add fuzz to the reflected vector

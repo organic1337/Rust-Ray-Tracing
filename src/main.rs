@@ -18,7 +18,7 @@ use rust_ray_tracing::vectors::{Color, Point, Vector};
 use rust_ray_tracing::consts::ASPECT_RATIO;
 use rust_ray_tracing::engine::materials::metal::Metal;
 
-fn ray_color<'a, T: Hittable<'a>>(ray: &Ray, world: &'a T, depth: usize) -> Color {
+fn ray_color<'a, 'b, T: Hittable<'a>>(ray: &Ray, world: &'b T, depth: usize) -> Color {
     let record = world.hit(ray, 0.001, f64::INFINITY);
     if depth <= 0 {
         return Color::zeroes();
@@ -26,7 +26,7 @@ fn ray_color<'a, T: Hittable<'a>>(ray: &Ray, world: &'a T, depth: usize) -> Colo
 
     match record {
         Some(record) => {
-            let material = record.material;
+            let material = record.material.clone();
             let scatter_result = material.scatter(ray, &record);
 
             if let Some(scatter_result) = scatter_result {
