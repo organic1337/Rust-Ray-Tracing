@@ -49,7 +49,7 @@ fn ray_color<'a, T: Hittable<'a>>(ray: &Ray, world: &T, depth: usize) -> Color {
 
 fn main() {
     // Image
-    let aspect_ratio = 16.0 / 9.0;
+    let aspect_ratio = ASPECT_RATIO;
     let image_width: usize = 400;
     let image_height: usize = (image_width as f64 / aspect_ratio) as usize;
 
@@ -71,12 +71,16 @@ fn main() {
     world.add(&right_sphere);
 
     // Camera
+    let look_from = Point::new(3.0, 3.0, 2.0);
+    let look_at = Point::new(0.0, 0.0, -1.0);
     let camera = Camera::new(
-        Point::new(-2.0, 2.0, 1.0),
-        Point::new(0.0, 0.0, -1.0),
+        look_from,
+        look_at,
         Point::new(0.0, 1.0, 0.0),
         20.0,
-        ASPECT_RATIO
+        ASPECT_RATIO,
+        2.0,
+        (look_from - look_at).size()
     );
 
     // Render
@@ -91,7 +95,6 @@ fn main() {
             let mut color = Color::zeroes();
 
             for _ in 0..samples_count {
-                // TODO: Improve the anti-aliasing.
                 let random_bias_x = random_float(0.0, 1.0);
                 let random_bias_y = random_float(0.0, 1.0);
 

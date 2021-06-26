@@ -38,6 +38,17 @@ impl Vector {
         }
     }
 
+    pub fn random_in_unit_disk() -> Vector {
+        loop {
+            let mut random_vector = Vector::random(-1.0, 1.0);
+            random_vector.z = 0.0;
+
+            if random_vector.size() <= 1.0 {
+                return random_vector;
+            }
+        }
+    }
+
     pub fn reflect(self, normal: Vector) -> Vector {
         self - 2.0 * self.dot(normal) * normal
     }
