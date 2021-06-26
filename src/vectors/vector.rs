@@ -58,9 +58,9 @@ impl Vector {
     }
 
     pub fn refract(self, normal: Vector, refraction_ratio: f64) -> Vector {
-        let cos_theta = f64::min(((-1.0) * self).dot(normal), 1.0);
+        let cos_theta = f64::min((-self).dot(normal), 1.0);
         let perp_ray = refraction_ratio * (self + cos_theta * normal);
-        let parallel_ray = (-1.0) * (1.0 - perp_ray.size_squared()).abs().sqrt() * normal;
+        let parallel_ray = -(1.0 - perp_ray.size_squared()).abs().sqrt() * normal;
 
         perp_ray + parallel_ray
     }

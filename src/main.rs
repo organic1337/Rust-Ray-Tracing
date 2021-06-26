@@ -18,7 +18,7 @@ use rust_ray_tracing::vectors::{Color, Point, Vector};
 use rust_ray_tracing::consts::ASPECT_RATIO;
 use rust_ray_tracing::engine::materials::metal::Metal;
 
-fn ray_color<'a, T: Hittable<'a>>(ray: &Ray, world: &T, depth: usize) -> Color {
+fn ray_color<'a, T: Hittable<'a>>(ray: &Ray, world: &'a T, depth: usize) -> Color {
     let record = world.hit(ray, 0.001, f64::INFINITY);
     if depth <= 0 {
         return Color::zeroes();
@@ -30,7 +30,7 @@ fn ray_color<'a, T: Hittable<'a>>(ray: &Ray, world: &T, depth: usize) -> Color {
             let scatter_result = material.scatter(ray, &record);
 
             if let Some(scatter_result) = scatter_result {
-                let ScatterResult {scattered, attenuation} = scatter_result;
+                let ScatterResult { scattered, attenuation } = scatter_result;
                 return attenuation * ray_color(&scattered, world, depth - 1);
             }
 
@@ -46,6 +46,39 @@ fn ray_color<'a, T: Hittable<'a>>(ray: &Ray, world: &T, depth: usize) -> Color {
     }
 }
 
+// fn generate_random_scene<'a>() -> HittableCollection<'a> {
+//     let mut world = HittableCollection::new();
+//     let ground_material: Box<dyn Material> = Box::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
+//     let ground = Sphere::new(
+//         Point::new(0.0, -1000.0, 0.0),
+//         1000.0,
+//         &ground_material
+//     );
+//
+//     for a in -11..11 {
+//         for b in -11..11 {
+//             let choose_material = random_float(0.0, 1.0);
+//             let center = Point::new(
+//                 (a as f64) + 0.9 * random_float(0.0, 1.0),
+//                 0.2,
+//                 (b as f64) + 0.9 * random_float(0.0, 1.0)
+//             );
+//
+//             if (center - Point::new(4.0, 0.2, 0.0)).size() > 0.9 {
+//                 let sphere_material: Box<dyn Material>;
+//                 if choose_material < 0.8 {
+//                     // Diffuse
+//                     let albedo = Color::random() * Color::random();
+//                     sphere_material = Box::new(Lambertian::new(albedo));
+//                     let sphere = Sphere::new(center, 0.2, &sphere_material);
+//                     world.add(&sphere);
+//                 }
+//             }
+//         }
+//     }
+//
+//     world
+// }
 
 fn main() {
     // Image
@@ -59,16 +92,16 @@ fn main() {
     let material_left: Box<dyn Material> = Box::new(Dielectric::new(1.5));
     let material_right: Box<dyn Material> = Box::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
 
-    let ground = Sphere::new(Point::new(0.0, -100.5, -1.0), 100.0, &material_ground);
-    let center_sphere = Sphere::new(Point::new(0.0, 0.0, -1.0), 0.5, &material_center);
-    let left_sphere = Sphere::new(Point::new(-1.0, 0.0, -1.0), 0.5, &material_left);
-    let right_sphere = Sphere::new(Point::new(1.0, 0.0, -1.0), 0.5, &material_right);
+    let ground = Sphere::new(Point::new(0.0, -100.5, -1.0), 100.0, material_ground);
+    let center_sphere = Sphere::new(Point::new(0.0, 0.0, -1.0), 0.5, material_center);
+    let left_sphere = Sphere::new(Point::new(-1.0, 0.0, -1.0), 0.5, material_left);
+    let right_sphere = Sphere::new(Point::new(1.0, 0.0, -1.0), 0.5, material_right);
 
     let mut world = HittableCollection::new();
-    world.add(&ground);
-    world.add(&center_sphere);
-    world.add(&left_sphere);
-    world.add(&right_sphere);
+    world.add(Box::new(ground));
+    world.add(Box::new(center_sphere));
+    world.add(Box::new(left_sphere));
+    world.add(Box::new(right_sphere));
 
     // Camera
     let look_from = Point::new(3.0, 3.0, 2.0);
@@ -80,7 +113,7 @@ fn main() {
         20.0,
         ASPECT_RATIO,
         2.0,
-        (look_from - look_at).size()
+        (look_from - look_at).size(),
     );
 
     // Render

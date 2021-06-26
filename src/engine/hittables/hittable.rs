@@ -29,5 +29,5 @@ impl<'a> HitRecord<'a> {
 /// Should be implemented by types which represent hittable objects.
 /// For example: sphere, qube, etc...
 pub trait Hittable<'a> {
-    fn hit(self: &Self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord<'a>>;
+    fn hit<'b>(self: &'a Self, ray: &'b Ray, t_min: f64, t_max: f64) -> Option<HitRecord<'a>>;
 }

@@ -2,7 +2,7 @@ use crate::engine::hittables::hittable::{Hittable, HitRecord};
 use crate::engine::Ray;
 
 pub struct HittableCollection<'a> {
-    hittable_list: Vec<&'a dyn Hittable<'a>>
+    hittable_list: Vec<Box<dyn Hittable<'a>>>
 }
 
 
@@ -13,7 +13,7 @@ impl<'a> HittableCollection<'a> {
         }
     }
 
-    pub fn add(&mut self, hittable: &'a dyn Hittable<'a>) {
+    pub fn add(&mut self, hittable: Box<dyn Hittable<'a>>) {
         self.hittable_list.push(hittable);
     }
 
@@ -23,7 +23,7 @@ impl<'a> HittableCollection<'a> {
 }
 
 impl<'a> Hittable<'a> for HittableCollection<'a> {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord<'a>> {
+    fn hit<'b>(&'a self, ray: &'b Ray, t_min: f64, t_max: f64) -> Option<HitRecord<'a>> {
         let mut smallest_distance = t_max;
         let mut result = None;
 
