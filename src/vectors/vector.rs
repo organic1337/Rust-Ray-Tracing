@@ -1,4 +1,3 @@
-use crate::engine::utils::{random_float};
 use std::cmp::min;
 
 
@@ -18,15 +17,6 @@ impl Vector {
     /// Generate a vector with all elements equal to 0
     pub fn zeroes() -> Vector {
         Vector::new(0.0, 0.0, 0.0)
-    }
-
-    /// Generate a vector with random elements between 0 - 1
-    pub fn random(min_value: f64, max_value: f64) -> Vector {
-        Vector::new(
-            random_float(min_value, max_value),
-            random_float(min_value, max_value),
-            random_float(min_value, max_value)
-        )
     }
 
     pub fn random_in_unit_sphere() -> Vector {
@@ -66,6 +56,7 @@ impl Vector {
     }
 }
 
+implement_random_function!(Vector, x, y, z);
 implement_common_vector_functions!(Vector, f64, x, y, z);
 implement_cross_function!(Vector, x, y, z);
 implement_unit_function!(Vector, x, y, z);

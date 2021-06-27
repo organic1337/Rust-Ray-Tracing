@@ -12,6 +12,23 @@ macro_rules! implement_unit_function {
 }
 
 
+macro_rules! implement_random_function {
+    ($vector_type: ty, $($field: ident), *) => {
+        use crate::engine::utils::{random_float};
+        impl $vector_type {
+            /// Generate a vector with random elements between 0 - 1
+            pub fn random(min_value: f64, max_value: f64) -> $vector_type {
+                <$vector_type>::new(
+                    random_float(min_value, max_value),
+                    random_float(min_value, max_value),
+                    random_float(min_value, max_value)
+                )
+            }
+        }
+    }
+}
+
+
 
 /// Implement cross product for vector.
 /// Cross product is defined only for vectors containing 3 elements.
