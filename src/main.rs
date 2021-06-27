@@ -1,22 +1,11 @@
-use std::fs::File;
-use std::io::Write;
-
-use rand::{random, Rng};
-
+use rust_ray_tracing::consts::ASPECT_RATIO;
 use rust_ray_tracing::engine::camera::Camera;
-use rust_ray_tracing::engine::hittables::hittable::{HitRecord, Hittable};
-use rust_ray_tracing::engine::hittables::hittable_collection::HittableCollection;
-use rust_ray_tracing::engine::hittables::sphere::Sphere;
-use rust_ray_tracing::engine::materials::lambertian::Lambertian;
-use rust_ray_tracing::engine::materials::dielectric::Dielectric;
-
-use rust_ray_tracing::engine::materials::material::{Material, ScatterResult};
+use rust_ray_tracing::engine::hittables::{Hittable, HittableCollection, Sphere};
+use rust_ray_tracing::engine::materials::{Dielectric, Lambertian, Material, Metal, ScatterResult};
 use rust_ray_tracing::engine::Ray;
 use rust_ray_tracing::engine::utils::random_float;
 use rust_ray_tracing::utils::ppm_writer::PPMWriter;
-use rust_ray_tracing::vectors::{Color, Point, Vector};
-use rust_ray_tracing::consts::ASPECT_RATIO;
-use rust_ray_tracing::engine::materials::metal::Metal;
+use rust_ray_tracing::vectors::{Color, Point};
 
 fn ray_color<'a, 'b, T: Hittable<'a>>(ray: &Ray, world: &'b T, depth: usize) -> Color {
     let record = world.hit(ray, 0.001, f64::INFINITY);
@@ -52,7 +41,7 @@ fn generate_random_scene<'a>() -> HittableCollection<'a> {
     let ground = Sphere::new(
         Point::new(0.0, -1000.0, 0.0),
         1000.0,
-        ground_material
+        ground_material,
     );
 
     world.add(Box::new(ground));
@@ -63,7 +52,7 @@ fn generate_random_scene<'a>() -> HittableCollection<'a> {
             let center = Point::new(
                 (a as f64) + 0.9 * random_float(0.0, 1.0),
                 0.2,
-                (b as f64) + 0.9 * random_float(0.0, 1.0)
+                (b as f64) + 0.9 * random_float(0.0, 1.0),
             );
 
             if (center - Point::new(4.0, 0.2, 0.0)).size() > 0.9 {
@@ -73,15 +62,13 @@ fn generate_random_scene<'a>() -> HittableCollection<'a> {
                     let albedo = Color::random(0.0, 1.0) * Color::random(0.0, 1.0);
                     sphere_material = Box::new(Lambertian::new(albedo));
                     world.add(Box::new(Sphere::new(center, 0.2, sphere_material)));
-                }
-                else if choose_material < 0.95 {
+                } else if choose_material < 0.95 {
                     // Metal
                     let albedo = Color::random(0.5, 1.0);
                     let fuzz = random_float(0.0, 0.5);
                     sphere_material = Box::new(Metal::new(albedo, fuzz));
                     world.add(Box::new(Sphere::new(center, 0.2, sphere_material)))
-                }
-                else {
+                } else {
                     // Glass
                     sphere_material = Box::new(Dielectric::new(1.5));
                     world.add(Box::new(Sphere::new(center, 0.2, sphere_material)));
@@ -108,7 +95,7 @@ fn main() {
     let image_height: usize = (image_width as f64 / aspect_ratio) as usize;
 
     // World
-    let mut world = generate_random_scene();
+    let world = generate_random_scene();
 
     // Camera
     let look_from = Point::new(13.0, 2.0, 3.0);

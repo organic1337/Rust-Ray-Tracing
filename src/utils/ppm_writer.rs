@@ -1,7 +1,6 @@
 use std::io::Write;
 use crate::vectors::Color;
 use std::fs::File;
-use std::cmp::max;
 
 const WRITE_ERROR_MESSAGE: &str = "Could not write to buffer.";
 const CREATE_FILE_ERROR_MESSAGE: &str = "Failed to create file";
@@ -27,7 +26,7 @@ pub struct PPMWriter {
 
 impl PPMWriter {
     pub fn get_file_writer(file_path: &str) -> PPMWriter {
-        let mut file_writer = File::create(file_path).expect(CREATE_FILE_ERROR_MESSAGE);
+        let file_writer = File::create(file_path).expect(CREATE_FILE_ERROR_MESSAGE);
         PPMWriter::new(Box::new(file_writer))
     }
 

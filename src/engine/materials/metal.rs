@@ -2,7 +2,6 @@ use crate::vectors::{Color, Vector};
 use crate::engine::materials::material::{Material, ScatterResult};
 use crate::engine::Ray;
 use crate::engine::hittables::hittable::HitRecord;
-use crate::engine::utils::random_float;
 
 pub struct Metal {
     albedo: Color,
@@ -22,7 +21,7 @@ impl Material for Metal {
         // Add fuzz to the reflected vector
         reflected = reflected + self.fuzz * Vector::random_in_unit_sphere();
 
-        let mut scattered = Ray::new(hit_record.point, reflected);
+        let scattered = Ray::new(hit_record.point, reflected);
         let attenuation = self.albedo;
 
         if scattered.direction.dot(hit_record.normal) > 0.0 {

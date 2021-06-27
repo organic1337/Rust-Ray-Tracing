@@ -1,17 +1,15 @@
 use crate::vectors::{Point, Vector};
 use crate::engine::Ray;
 use crate::engine::utils::degrees_to_radians;
-use crate::consts::{FOCAL_LENGTH, VIEWPORT_HEIGHT, ASPECT_RATIO};
+use crate::consts::VIEWPORT_HEIGHT;
 
 pub struct Camera {
-    aspect_ratio: f64,
     origin: Point,
     horizontal: Vector,
     vertical: Vector,
     lower_left_corner: Vector,
     u: Vector,
     v: Vector,
-    w: Vector,
     lens_radius: f64
 }
 
@@ -43,12 +41,11 @@ impl Camera {
         let lens_radius = aperture / 2.0;
 
         Camera {
-            aspect_ratio,
             origin: look_from,
             horizontal,
             vertical,
             lower_left_corner,
-            u, v, w,
+            u, v,
             lens_radius
         }
     }

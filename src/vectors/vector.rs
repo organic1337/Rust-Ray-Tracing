@@ -1,6 +1,3 @@
-use std::cmp::min;
-
-
 /// Represents a vector in the 3D space.
 #[derive(Copy, Clone, Debug)]
 pub struct Vector {
